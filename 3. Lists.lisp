@@ -9,7 +9,6 @@
 ; the original lists:
 ; > (new-union '(a b c) '(b a d))
 ; (A B C D)
-
 (defun new-union (x y)
   (reverse (union y (reverse x))))
 
@@ -18,7 +17,6 @@
 ; element to least common:
 ; > (occurrences '(a b a d a c d c a))
 ; ((A . 4) (C . 2) (D . 2) (B . 1))
-
 (defun occurrences (x)
   (if (consp x)
       (occ x '())
@@ -46,3 +44,30 @@
       (if (eql (car (car data)) elem)
           nil
           (non-member elem (cdr data)))))
+
+; 4. Why does (member '(a) '((a) (b))) return nil?
+; member's test is eql by default, hence why it return nil for comparing
+; two list (those two list are distinct objects).
+
+; 5. Suppose the function pos+ takes a list and returns a list of each element
+; plus its position:
+; > (pos+ '(7 5 1 4))
+; (7 6 3 7)
+; Define this function using (a) recursion, (b) iteration, (c) mapcar.
+; a. Recursion
+(defun pos+ (x)
+  (if (null x)
+      nil
+      (append 
+        (pos+ (reverse (cdr (reverse x)))) 
+        (cons (+ (car (reverse x)) (- (length x) 1)) nil))))
+; b. Iteration
+(defun pos+ (x)
+  (let ((res nil))
+    (do ((i x (cdr i)))
+        ((null i) (reverse res))
+      (setf res (cons (+ (length res) (car i)) res)))))
+; c. Mapcar
+(defun pos+ (l)
+  (let ((i -1))
+    (mapcar #'(lambda (x) (+ (incf i) x)) l)))
