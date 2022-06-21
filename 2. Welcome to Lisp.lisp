@@ -72,14 +72,15 @@
 ; 8. Give iterative and recursive definitions of a function that
 ; a. takes a positive integer and prints that many dots.
 ; b. takes a list and returns the number of times the symbol a occurs in it.
-; a. 
+
+;; a.
 ; recursive:
 (defun dots-rec (n)
   (if (eql n 0)
       'done
       (progn
         (format t ".")
-        (dots (- n 1)))))
+        (dots-rec (- n 1)))))
 ; iterative
 (defun dots-iter (n) 
   (do ((i n (- i 1)))
@@ -91,8 +92,8 @@
   (if (null x)
       0
       (if (eql (car x) 'a)
-          (+ 1 (counta (cdr x)))
-          (counta (cdr x)))))
+          (+ 1 (counta-rec (cdr x)))
+          (counta-rec (cdr x)))))
 ; iterative
 (defun counta-iter (x) 
   (let ((z 0))
@@ -106,26 +107,26 @@
 ; non-nil elements in a list. He has written two versions of this function,
 ; and neither of them work. Explain what's wrong with each, and give a correct version:
 ; a. 
-(defun summit (lst) 
-  (remove nil lst) 
-  (apply #'+ lst))
-; (remove nil lst) only returns the list without nil.
+;; (defun summit (lst) 
+;;   (remove nil lst) 
+;;   (apply #'+ lst))
+;;(remove nil lst) only returns the list without nil.
 ; fix: use setf to remove nil from list.
 ; correct version:
 (defun summit-fix (lst)
   (setf lst (remove nil lst))
   (apply #'+ lst))
 ; b.
-(defun summit (lst)
-  (let ((x (car lst)))
-    (if (null x)
-        (summit (cdr lst))
-        (+ x (summit (cdr lst))))))
-; (summit (cdr lst)) when x is null will lead to infinite recursion.
+;; (defun summit (lst)
+;;   (let ((x (car lst)))
+;;     (if (null x)
+;;         (summit (cdr lst))
+;;         (+ x (summit (cdr lst))))))
+;; ; (summit (cdr lst)) when x is null will lead to infinite recursion.
 ; fix: first, check if lst is empty. If it is return 0, else check if x is nil.
 ; If x is nil then return (summit (cdr lst)), otherwise return x + (summit (cdr lst)).
 ; correct version:
-(defun summit-fix (lst)
+(defun summit-fix2 (lst)
   (let ((x (car lst)))
     (if (not lst)
         0
