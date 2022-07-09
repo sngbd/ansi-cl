@@ -47,7 +47,7 @@
           (non-member elem (cdr data)))))
 
 ;; 4. Why does (member '(a) '((a) (b))) return nil?
-;; member's test is eql by default, hence why it return nil for comparing
+;; Answer: member's test is eql by default, hence why it return nil for comparing
 ;; two list (those two list are distinct objects).
 
 ;; 5. Suppose the function pos+ takes a list and returns a list of each element
@@ -141,4 +141,28 @@
 
 ;; 9. Write a program to find the longest finite path through a network
 ;; represented as in Section 3.15. The network may contain cycles.
+(defun longest-path (start end net)
+  (bfs end (list (list start)) net))
+
+(defun bfs (end queue net)
+  (if (null queue)
+      nil
+      (let ((path (car queue)))
+	(let ((node (car path)))
+	(if (eql node end)
+	    (if (eql (length queue) 1)
+		(reverse path)
+		(if (eql (car (car (cdr queue))) end)
+		    (reverse (car (cdr queue)))
+		    (reverse path)))
+	    (bfs end
+		 (append
+		  (cdr queue)
+		  (new-paths path node net))
+		 net))))))
+
+(defun new-paths (path node net)
+  (mapcar #'(lambda (n)
+	      (cons n path))
+	  (cdr (assoc node net))))
 
