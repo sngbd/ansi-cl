@@ -103,3 +103,41 @@
 (defun member-swap (x y)
   (let ((m (member x (swap-back y))))
     (cons-swap (car m) (cdr m))))
+
+;; 7. Modify the program in Figure 3.6 to use fewer cons cells.
+;; (Hint: Use dotted lists.)
+(defun compress (x)
+  (if (consp x)
+      (compr (car x) 1 (cdr x))
+      x))
+
+(defun compr (elt n lst)
+  (if (null lst)
+      (n-elts elt n)
+      (let ((next (car lst)))
+	(if (eql next elt)
+	    (compr elt (+ n 1) (cdr lst))
+	    (cons (n-elts elt n)
+		  (compr next 1 (cdr lst)))))))
+
+(defun n-elts (elt n)
+  (if (> n 1)
+      (cons n elt)
+      elt))
+
+;; 8. Define a function that takes a list and prints it in dot notation
+;; > (showdots '(a b c))
+;; (A . (B . (C . NIL)))
+;; NIL
+(defun showdots (x)
+  (do ((i 0 (+ i 1)))
+      ((eql (length x) i)
+       (progn
+	 (format t "NIL")
+	 (do ((j (length x) (- j 1)))
+	     ((eql 0 j) nil)
+	   (format t ")"))))
+    (format t "(~A . " (nth i x))))
+
+;; 9. Write a program to find the longest finite path through a network
+;; represented as in Section 3.15. The network may contain cycles.
