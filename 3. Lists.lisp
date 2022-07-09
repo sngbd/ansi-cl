@@ -88,6 +88,18 @@
       (cons (cons-swap (car y) (cdr y)) x)))
 ;; b. list
 (defun list-swap (x y)
-  (cons (cons y nil) x))
+  (if (null (consp y))
+      (cons y x)
+      (cons (cons y nil) x)))
 ;; c. length
+(defun swap-back (x)
+  (if (null x)
+      nil
+      (cons (cdr x) (swap-back (car x)))))
 
+(defun length-swap (x)
+  (length (swap-back x)))
+;; d. member
+(defun member-swap (x y)
+  (let ((m (member x (swap-back y))))
+    (cons-swap (car m) (cdr m))))
